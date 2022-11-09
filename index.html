@@ -5,11 +5,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Visualisation Project _ Scatter Plot Graph</title>
+    <link rel="stylesheet" href="./stylesheet.css" />
 </head>
 
 <body>
 
-    <h1>Scatter Plot Graph</h1>
+    <h1>Scatter Plot Graphs</h1>
 
     <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -17,28 +18,63 @@
 
         const w = window.innerWidth - 50;
         const h = window.innerHeight - 200;
-   
+        const padding = 60;
 
-        let svg = d3.select("body")
+        const svg = d3.select("body")
             .append("div")
             .attr("class", "scatter-graph")
             .append("svg")
             .attr("width", w)
             .attr("height", h)
-            .attr("style", "background:blue");
+            .attr("style", "background:white");
 
         fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json")
-        .then(response=>response.json())
-        .then(data=>{
-            dataString = JSON.stringify(data);
-  
-            
-            d3.select("body")
-            .append("text")
-            .attr("x","5")
-            .attr("y","5")
-            .text(data.map((x)=>x.Year));
-        });
+            .then(response => response.json())
+            .then(data => {
+                dataString = JSON.stringify(data);
+                let years =data.map((x)=>x.Year);
+                let time =data.map((x)=>x.Time);
+
+           //set xScale
+          const xScale = d3.scaleLinear()
+                    .domain([d3.min(data,(d)=> d.Year),d3.max(data,(d)=>d.Year)])
+                   .range([padding, w-padding]);
+
+                  //  const yScale = d3.scaleLinear()
+                //    .domain([d3.min(data.Timr),d3.max(data.Time)])
+                //    .range([h - padding,padding]);
+
+            const xAxis = d3.axisBottom(xScale);
+
+                //.append("text")
+                //    .attr("x", "5")
+                //    .attr("y", "5")
+                //    .text(data.map((x) => x.Year));
+
+                svg.append("g")
+                .attr("id", "x-axis")
+                .attr("transform","translate(0,"+(h-padding)+")")
+               .call(xAxis);
+
+                d3.select("body")
+                    .append("text")
+                    .attr("x", "5")
+                    .attr("y", "5")
+                    .text(data.map((x) => x.Year));
+
+                d3.select("body")
+                    .append("text")
+                    .attr("x", "5")
+                    .attr("y", "5")
+                    .text(data.map((x) => x.Time));
+
+                d3.select("body")
+                    .append("text")
+                    .attr("x", "5")
+                    .attr("y", "5")
+                    .text(dataString);
+
+            });
 
 
     </script>
