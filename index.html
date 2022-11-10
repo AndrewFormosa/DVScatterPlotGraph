@@ -37,38 +37,47 @@
 
            //set xScale
 
-           let parseTime = d3.timeParse("%Y"); //ensure that data.year is formated as a year for d3
+           let parseYear = d3.timeParse("%Y"); //ensure that data.year is formated as a year for d3
           const xScale = d3.scaleTime()
-                    .domain([d3.min(data,(d)=> parseTime(d.Year)),d3.max(data,(d)=>parseTime(d.Year))])
+                    .domain([d3.min(data,(d)=> parseYear(d.Year)),d3.max(data,(d)=>parseYear(d.Year))])
                    .range([padding, w-padding]);
 
-                  //  const yScale = d3.scaleLinear()
-                //    .domain([d3.min(data.Timr),d3.max(data.Time)])
-                //    .range([h - padding,padding]);
+                let parseTime=d3.timeParse("%M:%S");
+                    const yScale = d3.scaleTime()
+                    .domain([d3.min(data,(d)=>parseTime(d.Time)),d3.max(data,(d)=>parseTime(d.Time))])
+                    .range([h - padding,padding]);
 
-            const xAxis = d3.axisBottom(xScale);
+
+            
 
                 //.append("text")
                 //    .attr("x", "5")
                 //    .attr("y", "5")
                 //    .text(data.map((x) => x.Year));
-
+const xAxis = d3.axisBottom(xScale);
                 svg.append("g")
                 .attr("id", "x-axis")
                 .attr("transform","translate(0,"+(h-padding)+")")
                .call(xAxis);
+
+               const yAxis = d3.axisLeft(yScale);
+
+                svg.append("g")
+                .attr("id", "y-axis")
+                .attr("transform","translate("+padding+","+0+")")
+               .call(yAxis);
 
                 d3.select("body")
                     .append("text")
                     .attr("x", "5")
                     .attr("y", "5")
                     .text(data.map((x) => x.Year));
-
+                  
                 d3.select("body")
                     .append("text")
                     .attr("x", "5")
                     .attr("y", "5")
-                    .text(data.map((x) => x.Time));
+                    .text(data.map((x) => x.Time + " - p - "+(parseTime(x.Time))));
 
                 d3.select("body")
                     .append("text")
