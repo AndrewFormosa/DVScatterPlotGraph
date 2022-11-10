@@ -37,7 +37,7 @@
 
            //set xScale
 
-           let parseTime = d3.timeParse("%Y");
+           let parseTime = d3.timeParse("%Y"); //ensure that data.year is formated as a year for d3
           const xScale = d3.scaleTime()
                     .domain([d3.min(data,(d)=> parseTime(d.Year)),d3.max(data,(d)=>parseTime(d.Year))])
                    .range([padding, w-padding]);
