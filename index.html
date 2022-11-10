@@ -39,12 +39,12 @@
 
            let parseYear = d3.timeParse("%Y"); //ensure that data.year is formated as a year for d3
           const xScale = d3.scaleTime()
-                    .domain([d3.min(data,(d)=> parseYear(d.Year)),d3.max(data,(d)=>parseYear(d.Year))])
+                    .domain([d3.min(data,(d)=> (parseYear(d.Year))),d3.max(data,(d)=>(parseYear(d.Year)))])
                    .range([padding, w-padding]);
 
                 let parseTime=d3.timeParse("%M:%S");
                     const yScale = d3.scaleTime()
-                    .domain([d3.min(data,(d)=>parseTime(d.Time)),d3.max(data,(d)=>parseTime(d.Time))])
+                    .domain([parseTime(d3.min(data,(d)=>(d.Time))),parseTime(d3.max(data,(d)=>(d.Time)))])
                     .range([h - padding,padding]);
 
 
@@ -60,7 +60,9 @@ const xAxis = d3.axisBottom(xScale);
                 .attr("transform","translate(0,"+(h-padding)+")")
                .call(xAxis);
 
-               const yAxis = d3.axisLeft(yScale);
+               const yAxis = d3.axisLeft(yScale).tickFormat(d3.timeFormat("%M:%S"));
+
+    
 
                 svg.append("g")
                 .attr("id", "y-axis")
@@ -77,7 +79,7 @@ const xAxis = d3.axisBottom(xScale);
                     .append("text")
                     .attr("x", "5")
                     .attr("y", "5")
-                    .text(data.map((x) => x.Time + " - p - "+(parseTime(x.Time))));
+                    .text(data.map((x) => x.Time + " - p - "+(new Date(parseTime(x.Time)))));
 
                 d3.select("body")
                     .append("text")
