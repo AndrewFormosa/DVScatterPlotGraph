@@ -29,6 +29,12 @@ margin-bottom:15px;
     stroke-dasharray: 1 1;
 }
 
+.dot{
+    border-style: solid;
+    border-width: 1px;
+  border-color: black;
+}
+
 .scatter-graph{
     background: rgb(220, 220, 220);
     border-radius: 10px;

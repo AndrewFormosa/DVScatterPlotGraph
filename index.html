@@ -87,6 +87,10 @@
                     .attr("transform", "rotate(-90)")
                     .text("Time in Minutes");
 
+              
+                   
+
+
 
                 svg.selectAll("circle")
                     .data(data)
@@ -98,10 +102,12 @@
                     .attr("cx", (d) => xScale(parseYear(d.Year)))
                     .attr("cy", (d) => yScale(parseTime(d.Time)))
                     .attr("r", (d) => 5)
+                    .attr("stroke","black")
                     .style("fill", function (d) {
                         if (d.Doping == "") { return "green" }
                         else { return "red" };
                     })
+                            
                     .on("mouseover", function (event, d) {
                         tooltip
                             .transition()
@@ -122,6 +128,7 @@
                             .transition()
                             .style("opacity", 0);
                     });
+
 
 
 
