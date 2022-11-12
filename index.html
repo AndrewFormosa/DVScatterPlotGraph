@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Visualisation Project _ Scatter Plot Graph</title>
+    <title id="title">Data Visualisation Project _ Scatter Plot Graph</title>
     <link rel="stylesheet" href="./stylesheet.css" />
 </head>
 
@@ -28,58 +28,88 @@
             .attr("height", h)
             .attr("style", "background:white");
 
+        const tooltip = d3.select("svg")
+            .append("div")
+            .attr("id","tooltip")
+
         fetch("https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json")
             .then(response => response.json())
             .then(data => {
                 dataString = JSON.stringify(data);
-                let years =data.map((x)=>x.Year);
-                let time =data.map((x)=>x.Time);
+                let years = data.map((x) => x.Year);
+                let time = data.map((x) => x.Time);
 
-           //set xScale
+                //set xScale
+                let parseYear = d3.timeParse("%Y"); //ensure that data.year is formated as a year for d3
+                const xScale = d3.scaleTime()
+                    .domain([d3.min(data, (d) => (parseYear(d.Year-1))), d3.max(data, (d) => (parseYear(d.Year)))])
+                    .range([padding, w - padding]);
 
-           let parseYear = d3.timeParse("%Y"); //ensure that data.year is formated as a year for d3
-          const xScale = d3.scaleTime()
-                    .domain([d3.min(data,(d)=> (parseYear(d.Year))),d3.max(data,(d)=>(parseYear(d.Year)))])
-                   .range([padding, w-padding]);
+                //set yScale    
+                let parseTime = d3.timeParse("%M:%S");
+                const yScale = d3.scaleTime()
+                    .domain([parseTime(d3.min(data, (d) => (d.Time))), parseTime(d3.max(data, (d) => (d.Time)))])
+                    .range([h - padding, padding]);
 
-                let parseTime=d3.timeParse("%M:%S");
-                    const yScale = d3.scaleTime()
-                    .domain([parseTime(d3.min(data,(d)=>(d.Time))),parseTime(d3.max(data,(d)=>(d.Time)))])
-                    .range([h - padding,padding]);
-
-
-            
-
-                //.append("text")
-                //    .attr("x", "5")
-                //    .attr("y", "5")
-                //    .text(data.map((x) => x.Year));
-const xAxis = d3.axisBottom(xScale);
+                //set up xAxis
+                const xAxis = d3.axisBottom(xScale);
                 svg.append("g")
-                .attr("id", "x-axis")
-                .attr("transform","translate(0,"+(h-padding)+")")
-               .call(xAxis);
+                    .attr("id", "x-axis")
+                    .attr("transform", "translate(0," + (h - padding) + ")")
+                    .attr("id", "x-axis")
+                    .call(xAxis);
 
-               const yAxis = d3.axisLeft(yScale).tickFormat(d3.timeFormat("%M:%S"));
-
-    
+                //set up yAxis
+                const yAxis = d3.axisLeft(yScale).tickFormat(d3.timeFormat("%M:%S")); //sets the format of the axis ticks
 
                 svg.append("g")
-                .attr("id", "y-axis")
-                .attr("transform","translate("+padding+","+0+")")
-               .call(yAxis);
+                    .attr("id", "y-axis")
+                    .attr("transform", "translate(" + padding + "," + 0 + ")")
+                    .attr("id", "y-axis")
+                    .call(yAxis);
+
+
+
+                svg.selectAll("circle")
+                .data(data)
+                .enter()
+                .append("circle")
+                .attr("class","dot")
+                .attr("data-xvalue",(d)=>(parseYear(d.Year)))
+                .attr("data-yvalue",(d)=>(parseTime(d.Time)))
+                .attr("cx",(d)=>xScale(parseYear(d.Year)))
+                .attr("cy",(d)=>yScale(parseTime(d.Time)))
+                .attr("r",(d)=>5)
+                .on("mouseover", function(event, d){
+                    tooltip
+                    .transition()
+                    .duration(200)
+                    .style("opacity",0.9);
+                    tooltip
+                    .html("tester")
+                  // .style("position","absolute")
+                    .style("left",event.clientX+20+"px")
+                    .style("right",event.clientY+20+"px");
+                })
+                .on("mouseout", function(event,d){
+                    tooltip
+                    .transition()
+                    .style("opacity",0);
+                });
+
+
 
                 d3.select("body")
                     .append("text")
                     .attr("x", "5")
                     .attr("y", "5")
                     .text(data.map((x) => x.Year));
-                  
+
                 d3.select("body")
                     .append("text")
                     .attr("x", "5")
                     .attr("y", "5")
-                    .text(data.map((x) => x.Time + " - p - "+(new Date(parseTime(x.Time)))));
+                    .text(data.map((x) => x.Time + " - p - " + (new Date(parseTime(x.Time)))));
 
                 d3.select("body")
                     .append("text")
