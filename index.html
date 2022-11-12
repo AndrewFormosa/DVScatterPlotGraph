@@ -27,7 +27,6 @@
             .append("svg")
             .attr("width", w)
             .attr("height", h)
-        //  .attr("style", "background:white");
 
         const tooltip = d3.select("body")
             .append("div")
@@ -54,9 +53,8 @@
 
                 //set up xAxis
                 const xAxis = d3.axisBottom(xScale)
-                   
                     .tickPadding(10)
-                    .tickSize(-h+200);
+                    .tickSize(-h + 200);
 
                 svg.append("g")
                     .attr("id", "x-axis")
@@ -72,15 +70,16 @@
 
                 //set up yAxis
                 const yAxis = d3.axisLeft(yScale).tickFormat(d3.timeFormat("%M:%S"))
-                .tickPadding(10)
-                .tickSize(-w+padding+100); //sets the format of the axis ticks
+                    .tickPadding(10)
+                    .tickSize(-w + padding + 100); //sets the format of the axis ticks
 
                 svg.append("g")
                     .attr("id", "y-axis")
                     .attr("transform", "translate(" + padding + "," + 0 + ")")
                     .attr("id", "y-axis")
                     .call(yAxis);
-                //y-axis title
+
+                //y-axis title         
                 svg.append("text")
                     .attr("text-anchor", "middle")
                     .attr("x", -h / 2)
@@ -88,11 +87,7 @@
                     .attr("transform", "rotate(-90)")
                     .text("Time in Minutes");
 
-              
-                   
-
-
-
+                //create points
                 svg.selectAll("circle")
                     .data(data)
                     .enter()
@@ -103,12 +98,12 @@
                     .attr("cx", (d) => xScale(parseYear(d.Year)))
                     .attr("cy", (d) => yScale(parseTime(d.Time)))
                     .attr("r", (d) => 5)
-                    .attr("stroke","black")
+                    .attr("stroke", "black")
                     .style("fill", function (d) {
                         if (d.Doping == "") { return "green" }
                         else { return "red" };
                     })
-                            
+
                     .on("mouseover", function (event, d) {
                         tooltip
                             .transition()
@@ -129,10 +124,6 @@
                             .transition()
                             .style("opacity", 0);
                     });
-
-
-
-
 
 
                 //create legend
